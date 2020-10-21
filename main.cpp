@@ -20,6 +20,7 @@ public:
             }
             outdegrees.push_back(degree);
             initialProbabilities.push_back(1.0 / nodes.size());
+            currentProbabilities = initialProbabilities;
         }
     }
     vector<vector<int>> getEdges() {
@@ -38,14 +39,23 @@ public:
         return initialProbabilities;
     }
 
+    vector<double> getCurrentProbs() {
+        return currentProbabilities;
+    }
+
+    void setCurrentProbs(vector<double> probs) {
+        currentProbabilities = probs;
+    }
+
 private:
     vector<string> nodes;
     vector<vector<int>> edges;
     vector<int> outdegrees;
     vector<double> initialProbabilities;
+    vector<double> currentProbabilities;
 };
 
-vector<double> updateProbabilities(vector<double> initProbs, vector<string> nodes, vector<vector<int>> edges);
+vector<double> updateProbabilities(Graph& graph);
 
 vector<double> getRanks(vector<double> initProbs, double e);
 
@@ -92,34 +102,53 @@ int main()
     }
 
     Graph graphObject(nodes, edges);
+    for (double p : graphObject.getCurrentProbs()) {
+        cout << p << endl;
+    }
+    cout << endl;
 
-    for (double p : graphObject.getInitProbs()) {
+    vector<double> probs = updateProbabilities(graphObject);
+
+    for (double p : graphObject.getCurrentProbs()) {
         cout << p << endl;
     }
 
-    for (int p : graphObject.getDegrees()) {
+    cout << endl;
+
+    for (double p : probs) {
         cout << p << endl;
     }
-   
+
     
 }
 
-//vector<double> updateProbabilities(vector<double> initProbs, vector<string> nodes, vector<vector<int>> edges) {
-//    int i = 0;
-//    int j = 0;
-//    int n = initProbs.size();
-//    
-//    for (int k = 0; k < n; k++)
-//    {
-//        double newProb = 0.0;
-//        
-//        for (int l = 0; l < n; l++)
-//        {
-//            double transProb;
-//
-//        }
-//    }
-//}
+vector<double> updateProbabilities(Graph& graph) {
+    int n = graph.getInitProbs().size();
+    vector<double> newProbs(n,0);
+    vector<double> oldProbs = graph.getCurrentProbs();
+    
+    for (int j = 0; j < n; j++)
+    {       
+        for (int i = 0; i < n; i++)
+        {
+            double pi = oldProbs[i];
+            double P;
+            vector<vector<int>> edges = graph.getEdges();
+            int outdegree = graph.getDegrees()[i];
+            if (isEdge(i, j, edges)) {
+                P = 0.85 / outdegree + 0.15 / n;
+            } else if (outdegree > 0) {
+                P = 0.15 / n;
+            }else {
+                P = 1.0 / n;
+            }
+            
+            newProbs[j] += pi * P; 
+        }
+    }
+    graph.setCurrentProbs(newProbs);
+    return newProbs;
+}
 
 bool isEdge(int x, int y, vector<vector<int>>& edges) {
     for (vector<int> edge : edges) {
