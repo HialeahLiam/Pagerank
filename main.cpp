@@ -6,22 +6,37 @@
 
 using namespace std;
 
-class PageRank {
+class Graph {
 public:
-    PageRank(string n) {
-        name = n;
-        cout << "Object created" << endl;
+    Graph(vector<string> nodes, vector< vector<int>> edges) {
+        this->nodes = nodes;
+        this->edges = edges;
+        for (int i = 0; i < nodes.size(); i++) {
+            int degree = 0;
+            for (vector<int> edge : edges) {
+                if (edge[0] == i) {
+                    degree++;
+                }
+            }
+            outdegrees.push_back(degree);
+        }
     }
-    string getName() {
-        return name;
+    vector<vector<int>> getEdges() {
+        return edges;
     }
-    void setName(string n) {
-        name = n;
+
+    vector<string> getNodes() {
+        return nodes;
     }
+
+    vector<int> getDegrees() {
+        return outdegrees;
+    }
+
 private:
-    string name;
-
-
+    vector<string> nodes;
+    vector<vector<int>> edges;
+    vector<int> outdegrees;
 };
 
 vector<double> updateProbabilities(vector<double> initProbs, vector<string> nodes, vector<vector<int>> edges);
@@ -75,6 +90,12 @@ int main()
     {
         probabilities.push_back(1.0/nodes.size());
         
+    }
+
+    Graph graphObject(nodes, edges);
+
+    for (int d : graphObject.getDegrees()) {
+        cout << d << endl;
     }
     
 }
