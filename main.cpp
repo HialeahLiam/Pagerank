@@ -24,7 +24,11 @@ private:
 
 };
 
+vector<double> updateProbabilities(vector<double> initProbs, vector<string> nodes, vector<vector<int>> edges);
 
+vector<double> getRanks(vector<double> initProbs, double e);
+
+bool isEdge(int x, int y, vector<vector<int>>& edges);
 
 int main()
 {
@@ -70,10 +74,36 @@ int main()
     for (int i = 0; i < nodes.size(); i++)
     {
         probabilities.push_back(1.0/nodes.size());
-        cout << probabilities[i] << endl;
+        
     }
+    
+}
 
-  
-  
+//vector<double> updateProbabilities(vector<double> initProbs, vector<string> nodes, vector<vector<int>> edges) {
+//    int i = 0;
+//    int j = 0;
+//    int n = initProbs.size();
+//    
+//    for (int k = 0; k < n; k++)
+//    {
+//        double newProb = 0.0;
+//        
+//        for (int l = 0; l < n; l++)
+//        {
+//            double transProb;
+//
+//        }
+//    }
+//}
+
+bool isEdge(int x, int y, vector<vector<int>>& edges) {
+    for (vector<int> edge : edges) {
+        if (edge[0] == x) {
+            if (edge[1] == y) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
