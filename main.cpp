@@ -19,6 +19,7 @@ public:
                 }
             }
             outdegrees.push_back(degree);
+            initialProbabilities.push_back(1.0 / nodes.size());
         }
     }
     vector<vector<int>> getEdges() {
@@ -33,10 +34,15 @@ public:
         return outdegrees;
     }
 
+    vector<double> getInitProbs() {
+        return initialProbabilities;
+    }
+
 private:
     vector<string> nodes;
     vector<vector<int>> edges;
     vector<int> outdegrees;
+    vector<double> initialProbabilities;
 };
 
 vector<double> updateProbabilities(vector<double> initProbs, vector<string> nodes, vector<vector<int>> edges);
@@ -85,18 +91,16 @@ int main()
         cout << "node File not opening" << endl;
     }
 
-    vector<double> probabilities;
-    for (int i = 0; i < nodes.size(); i++)
-    {
-        probabilities.push_back(1.0/nodes.size());
-        
-    }
-
     Graph graphObject(nodes, edges);
 
-    for (int d : graphObject.getDegrees()) {
-        cout << d << endl;
+    for (double p : graphObject.getInitProbs()) {
+        cout << p << endl;
     }
+
+    for (int p : graphObject.getDegrees()) {
+        cout << p << endl;
+    }
+   
     
 }
 
