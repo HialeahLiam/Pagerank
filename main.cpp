@@ -3,6 +3,7 @@
 #include <array>
 #include <fstream>
 #include <vector>
+#include <cmath>
 
 using namespace std;
 
@@ -57,7 +58,7 @@ private:
 
 vector<double> updateProbabilities(Graph& graph);
 
-vector<double> getRanks(vector<double> initProbs, double e);
+vector<double> getRanks(Graph graph, double e);
 
 bool isEdge(int x, int y, vector<vector<int>>& edges);
 
@@ -109,17 +110,31 @@ int main()
 
     vector<double> probs = updateProbabilities(graphObject);
 
-    for (double p : graphObject.getCurrentProbs()) {
-        cout << p << endl;
+    probs = getRanks(graphObject, 0.001);
+
+    for (int i = 0; i < graphObject.getNodes().size(); i++) {
+        cout << "Pagerank of  " <<graphObject.getNodes()[i] << ":  " << probs[i] << endl;
     }
 
     cout << endl;
 
-    for (double p : probs) {
-        cout << p << endl;
-    }
-
     
+}
+
+vector<double> getRanks(Graph graph, double e) {
+    double TVD = 0.0;
+    graph.setCurrentProbs(graph.getInitProbs());
+    do
+    {
+        vector<double> oldProbs = graph.getCurrentProbs();
+        vector<double> newProbs = updateProbabilities(graph);
+        for (int i = 0; i < graph.getNodes().size(); i++) {
+            TVD += abs(newProbs[i] - oldProbs[i]);
+        }
+        TVD /= 2;
+        graph.setCurrentProbs(newProbs);
+    } while (TVD >= e);
+    return graph.getCurrentProbs();
 }
 
 vector<double> updateProbabilities(Graph& graph) {
